@@ -1,9 +1,5 @@
 #!/bin/bash
 
-###
-# Инициализируем бд
-###
-
 docker exec -it configSrv mongosh --port 27017
 rs.initiate(
   {
@@ -47,21 +43,10 @@ db.helloDoc.countDocuments();
 
 exit(); 
 
-###
-# Инициализируем бд
-###
+# docker exec -it shard1_1 mongosh --port 27011
+# db.helloDoc.countDocuments();
+# exit();
 
-# docker compose exec -T mongodb1 mongosh <<EOF
-# use somedb
-# for(var i = 0; i < 1000; i++) db.helloDoc.insertOne({age:i, name:"ly"+i})
-# EOF
-
-docker exec -it shard1_1 mongosh --port 27011
-db.helloDoc.countDocuments();
-exit();
-
-docker exec -it shard2_1 mongosh --port 27021
-db.helloDoc.countDocuments();
-exit();
-
-
+# docker exec -it shard2_1 mongosh --port 27021
+# db.helloDoc.countDocuments();
+# exit();

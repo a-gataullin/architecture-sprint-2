@@ -28,6 +28,9 @@ rs.initiate({_id: "shard2", members: [
 ]});
 EOF
 
+# На подключение к роутеру может упасть ошибка ErrConnectionRefused. 
+# В этом случае нужно запустить команду вручную
+
 docker compose exec -T mongos_router mongosh --port 27020 <<EOF
 sh.addShard( "shard1/shard1_1:27011");
 sh.addShard( "shard2/shard2_1:27021");
@@ -38,17 +41,4 @@ sh.shardCollection("somedb.helloDoc", { "name" : "hashed" } )
 use somedb
 
 for(var i = 0; i < 1000; i++) db.helloDoc.insertOne({age:i, name:"ly"+i});
-EOF
-
-# docker exec -it shard1_1 mongosh --port 27011
-# db.helloDoc.countDocuments();
-# exit();
-
-# docker exec -it shard2_1 mongosh --port 27021
-# db.helloDoc.countDocuments();
-# exit();
-
-
-docker compose exec -T redis_1 sh <<EOF
-echo "yes" | redis-cli --cluster create   173.17.0.2:6379   173.17.0.3:6379   173.17.0.4:6379   173.17.0.5:6379   173.17.0.6:6379   173.17.0.7:6379   --cluster-replicas 1
 EOF
